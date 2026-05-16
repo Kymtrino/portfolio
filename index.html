@@ -1,10 +1,1143 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Moje Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Black Diamond Studio | Gdynia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --deep: #111111;
+      --card: #161616;
+      --border: #2a2a2a;
+      --gold: #c9a96e;
+      --gold-light: #e8c98a;
+      --white: #f5f0eb;
+      --muted: #888;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── CURSOR ── */
+    body { cursor: none; }
+    #cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+    }
+    #cursor.big {
+      width: 40px; height: 40px;
+      background: transparent;
+      border: 1px solid var(--gold);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: linear-gradient(to bottom, rgba(10,10,10,.95) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+      transition: backdrop-filter .4s, background .4s;
+    }
+    nav.scrolled {
+      background: rgba(10,10,10,.96);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      opacity: .75;
+      transition: opacity .25s, color .25s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #1a1209 0%, #0a0a0a 70%);
+    }
+    .hero-diamonds {
+      position: absolute; inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .diamond {
+      position: absolute;
+      width: 1px; height: 1px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: twinkle var(--dur, 4s) ease-in-out infinite var(--delay, 0s);
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(1); }
+      50% { opacity: var(--op, .6); transform: scale(var(--sc, 1.5)); }
+    }
+    .hero-content { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      font-size: .65rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp .9s .3s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: 1.02;
+      letter-spacing: -.01em;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp .9s .5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-sub {
+      margin-top: 1.4rem;
+      font-size: .72rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp .9s .7s forwards;
+    }
+    .hero-cta {
+      margin-top: 3.5rem;
+      display: inline-flex; align-items: center; gap: 1rem;
+      text-decoration: none;
+      color: var(--gold);
+      font-size: .7rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: .35rem;
+      opacity: 0;
+      animation: fadeUp .9s .9s forwards;
+      transition: gap .3s, color .3s;
+    }
+    .hero-cta:hover { gap: 1.8rem; color: var(--gold-light); }
+    .hero-cta::after { content: '→'; font-size: .9rem; }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .6rem;
+      opacity: 0; animation: fadeUp .9s 1.2s forwards;
+    }
+    .hero-scroll span {
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      50.01% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 7rem 4rem; }
+    .section-label {
+      font-size: .6rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--white);
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    /* ── ABOUT ── */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      max-width: 1300px; margin: 0 auto;
+      padding: 7rem 4rem;
+    }
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      margin-top: 3rem;
+    }
+    .stat {
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+    }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: var(--gold);
+      font-weight: 300;
+      line-height: 1;
+    }
+    .stat-label { font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: .4rem; }
+    .about-text { font-size: .82rem; line-height: 1.9; color: rgba(245,240,235,.7); margin-top: 1.5rem; }
+    .about-image-wrap {
+      position: relative;
+    }
+    .about-img-main {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      display: block;
+    }
+    .about-img-accent {
+      position: absolute;
+      width: 55%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      bottom: -3rem;
+      right: -3rem;
+      border: 4px solid var(--black);
+    }
+    .about-img-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem;
+    }
+    .about-img-placeholder svg { opacity: .25; }
+    .about-img-placeholder span { font-size: .65rem; letter-spacing: .2em; color: var(--muted); text-transform: uppercase; }
+
+    /* ── SERVICES ── */
+    #services { max-width: 1300px; margin: 0 auto; }
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+    }
+    .service-card {
+      background: var(--card);
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background .3s;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width .4s;
+    }
+    .service-card:hover { background: #1c1c1c; }
+    .service-card:hover::before { width: 100%; }
+    .service-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: .6rem;
+    }
+    .service-desc { font-size: .72rem; line-height: 1.8; color: var(--muted); }
+    .service-price {
+      margin-top: 1.5rem;
+      font-size: .65rem;
+      letter-spacing: .15em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    /* ── GALLERY / PORTFOLIO ── */
+    #portfolio { background: var(--deep); }
+    .portfolio-inner { max-width: 1400px; margin: 0 auto; }
+    .portfolio-header { margin-bottom: 3rem; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 250px;
+      gap: 6px;
+    }
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+      background: var(--card);
+    }
+    .gallery-item.tall { grid-row: span 2; }
+    .gallery-item.wide { grid-column: span 2; }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s ease, filter .4s;
+      filter: saturate(.85);
+    }
+    .gallery-item:hover img { transform: scale(1.05); filter: saturate(1.1); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,.7) 0%, transparent 60%);
+      opacity: 0; transition: opacity .35s;
+      display: flex; align-items: flex-end; padding: 1.5rem;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-overlay span {
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold);
+    }
+
+    /* ── REVIEWS ── */
+    #reviews { max-width: 1200px; margin: 0 auto; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+    .review-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+    }
+    .review-stars { color: var(--gold); font-size: .85rem; margin-bottom: 1rem; letter-spacing: .1em; }
+    .review-text { font-size: .78rem; line-height: 1.85; color: rgba(245,240,235,.75); font-style: italic; }
+    .review-author {
+      margin-top: 1.5rem;
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .review-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, #7a5c2e 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--black);
+    }
+    .review-name { font-size: .72rem; font-weight: 500; letter-spacing: .08em; }
+    .review-rating-badge {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: var(--gold);
+      color: var(--black);
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      padding: .25rem .6rem;
+    }
+
+    /* ── BOOKING ── */
+    #booking {
+      text-align: center;
+      background: linear-gradient(135deg, #0f0b04 0%, #1a1209 50%, #0f0b04 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    #booking::before {
+      content: 'BOOK';
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 22vw;
+      font-weight: 600;
+      color: rgba(201,169,110,.04);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: -.02em;
+    }
+    .booking-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+    .booking-inner .section-title { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+    .booking-text { margin-top: 1.5rem; font-size: .78rem; line-height: 1.9; color: rgba(245,240,235,.6); }
+    .booking-address { margin-top: 1rem; font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); }
+    .btn-book {
+      display: inline-block;
+      margin-top: 3rem;
+      padding: 1.1rem 3.5rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      transition: background .3s, transform .2s;
+    }
+    .btn-book:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .social-links {
+      display: flex; justify-content: center; gap: 2.5rem;
+      margin-top: 3rem;
+    }
+    .social-links a {
+      font-size: .65rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: .2rem;
+      transition: color .25s, border-color .25s;
+    }
+    .social-links a:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy { font-size: .62rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: .1em;
+    }
+
+    /* ── DIVIDER ── */
+    .gold-line {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 1.8rem 0;
+    }
+
+    /* ── SERVICE ICONS (SVG) ── */
+    .svc-icon {
+      width: 52px; height: 52px;
+      margin-bottom: 1.8rem;
+      display: block;
+    }
+    .svc-icon svg { width: 100%; height: 100%; }
+
+    /* ── PRICING PAGE ── */
+    #pricing {
+      display: none;
+      min-height: 100vh;
+      padding-top: 8rem;
+    }
+    #pricing.active { display: block; }
+    #main-content.hidden { display: none; }
+
+    .pricing-inner { max-width: 1100px; margin: 0 auto; padding: 0 4rem 7rem; }
+    .pricing-back {
+      display: inline-flex; align-items: center; gap: .7rem;
+      color: var(--gold); font-size: .68rem; letter-spacing: .22em;
+      text-transform: uppercase; cursor: pointer;
+      border-bottom: 1px solid var(--gold); padding-bottom: .25rem;
+      margin-bottom: 3rem;
+      background: none; border-left: none; border-right: none; border-top: none;
+      font-family: var(--font-body);
+    }
+    .pricing-back::before { content: '←'; font-size: .9rem; }
+    .pricing-back:hover { color: var(--gold-light); }
+
+    .pricing-category {
+      margin-bottom: 4rem;
+    }
+    .pricing-cat-header {
+      display: flex; align-items: center; gap: 1.2rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-cat-icon { width: 32px; height: 32px; flex-shrink: 0; }
+    .pricing-cat-icon svg { width: 100%; height: 100%; }
+    .pricing-cat-name {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--white);
+    }
+    .pricing-cat-name em { font-style: italic; color: var(--gold); }
+
+    .pricing-table { width: 100%; border-collapse: collapse; }
+    .pricing-table tr {
+      border-bottom: 1px solid rgba(42,42,42,.6);
+      transition: background .2s;
+    }
+    .pricing-table tr:hover { background: rgba(201,169,110,.04); }
+    .pricing-table td {
+      padding: 1rem .5rem;
+      font-size: .78rem;
+      line-height: 1.5;
+      color: rgba(245,240,235,.8);
+    }
+    .pricing-table td:last-child {
+      text-align: right;
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+    .pricing-table td .duration {
+      display: block;
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: .2rem;
+    }
+    .pricing-note {
+      font-size: .68rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: .6rem;
+      padding-left: .5rem;
+    }
+    .pricing-book-cta {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 3rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    .pricing-book-cta p {
+      font-size: .78rem; color: var(--muted); margin-bottom: 1.5rem; letter-spacing: .05em;
+    }
+
+    /* ── REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      #about { grid-template-columns: 1fr; gap: 3rem; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .reviews-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #about { padding: 5rem 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .services-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Siema, to moja strona 🚀</h1>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">Black Diamond</a>
+  <ul class="nav-links">
+    <li><a href="#about">O nas</a></li>
+    <li><a href="#" onclick="showPricing(event)">Usługi & Cennik</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#reviews">Opinie</a></li>
+    <li><a href="#booking">Rezerwacja</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-diamonds" id="diamonds"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Salon kosmetyczny · Gdynia</p>
+    <h1 class="hero-title">Black<br><em>Diamond</em><br>Studio</h1>
+    <p class="hero-sub">Paznokcie · Rzęsy · Brwi</p>
+    <a class="hero-cta" href="#booking">Zarezerwuj wizytę</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PRICING PAGE (hidden by default) -->
+<div id="pricing">
+  <div class="pricing-inner">
+    <button class="pricing-back" onclick="hidePricing()">Wróć do strony głównej</button>
+    <div style="margin-bottom:3.5rem">
+      <p class="section-label">Pełny cennik</p>
+      <h2 class="section-title">Wszystkie <em>usługi</em></h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- MANICURE HYBRYDOWY -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 28C11 28 7 24 7 17C7 12 10 8 16 8C22 8 25 12 25 17C25 24 21 28 21 28" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M13 28H19" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M16 8V5" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="16" cy="4" r="1.2" fill="#c9a96e"/>
+            <path d="M10 11L8 9M22 11L24 9" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M12 18C12 18 13 21 16 21C19 21 20 18 20 18" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Manicure <em>hybrydowy</em></div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Naprawa 1 paznokcia</td><td>15 zł<span class="duration">20 min</span></td></tr>
+        <tr><td>Manicure męski</td><td>80 zł<span class="duration">40 min</span></td></tr>
+        <tr><td>Klasyczny manicure</td><td>80 zł<span class="duration">40 min</span></td></tr>
+        <tr><td>Manicure hybrydowy krótkie paznokcie 1 kolor</td><td>140 zł<span class="duration">1h 40 min</span></td></tr>
+        <tr><td>Manicure hybrydowy długie paznokcie 1 kolor</td><td>150 zł<span class="duration">1h 40 min</span></td></tr>
+        <tr><td>Uzupełnienie żelem paznokcie 1 kolor (rozmiar do 2)</td><td>160 zł<span class="duration">1h 50 min</span></td></tr>
+        <tr><td>Uzupełnienie żelem paznokcie 1 kolor (rozmiar do 4)</td><td>180 zł<span class="duration">2h 20 min</span></td></tr>
+        <tr><td>Uzupełnienie paznokcie żelem 1 kolor (rozmiar do 6)</td><td>200 zł<span class="duration">2h 20 min</span></td></tr>
+        <tr><td>Ściągnięcie stylizacji hybrydowej (bez założenia)</td><td>60 zł<span class="duration">40 min</span></td></tr>
+        <tr><td>Ściągnięcie żelowej stylizacji (bez założenia)</td><td>80 zł<span class="duration">40 min</span></td></tr>
+      </table>
+    </div>
+
+    <!-- PRZEDŁUŻANIE -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 26L10 10L13 14L16 6L19 14L22 10L24 26" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 26H24" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M12 26L12 22" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+            <path d="M16 26L16 20" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+            <path d="M20 26L20 22" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Przedłużanie <em>paznokci</em></div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Przedłużanie S (długość 1–2) — Yuliia / Viktoria</td><td>210 zł<span class="duration">2h 30 min</span></td></tr>
+        <tr><td>Przedłużanie S (długość 1–2) — Lesia</td><td>190 zł<span class="duration">2h 40 min</span></td></tr>
+        <tr><td>Przedłużanie M (długość 3–4) — Yuliia / Viktoriia</td><td>230 zł<span class="duration">2h 30 min</span></td></tr>
+        <tr><td>Przedłużanie M (długość 3–4) — Lesia</td><td>210 zł<span class="duration">2h 50 min</span></td></tr>
+        <tr><td>Przedłużanie L (długość 5–6)</td><td>250 zł<span class="duration">2h 40 min</span></td></tr>
+        <tr><td>Przedłużanie XL (długość 7–8)</td><td>280 zł<span class="duration">2h 40 min</span></td></tr>
+      </table>
+    </div>
+
+    <!-- PEDICURE -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="16" cy="22" rx="9" ry="5" stroke="#c9a96e" stroke-width="1.4"/>
+            <path d="M10 22C10 19 11 16 13 15" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M22 22C22 19 21 16 19 15" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="13" cy="13.5" r="1.5" fill="#c9a96e" opacity=".7"/>
+            <circle cx="16" cy="12" r="1.5" fill="#c9a96e" opacity=".7"/>
+            <circle cx="19" cy="13.5" r="1.5" fill="#c9a96e" opacity=".7"/>
+            <circle cx="11" cy="15.5" r="1.2" fill="#c9a96e" opacity=".5"/>
+            <circle cx="21" cy="15.5" r="1.2" fill="#c9a96e" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Pedicure</div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Opracowanie stóp</td><td>80 zł<span class="duration">30 min</span></td></tr>
+        <tr><td>Pedicure klasyczny (na sucho, frezą)</td><td>140 zł<span class="duration">1h</span></td></tr>
+        <tr><td>Opracowanie palców + hybryda (bez pięt)</td><td>160 zł<span class="duration">1h 15 min</span></td></tr>
+        <tr><td>Pedicure hybrydowy</td><td>180 zł<span class="duration">1h 30 min</span></td></tr>
+      </table>
+    </div>
+
+    <!-- LAMINACJA RZĘS -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 16C4 16 8 10 16 10C24 10 28 16 28 16" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <ellipse cx="16" cy="16" rx="4" ry="4" stroke="#c9a96e" stroke-width="1.2"/>
+            <circle cx="16" cy="16" r="1.5" fill="#c9a96e"/>
+            <path d="M8 8L9.5 10.5M16 6V9M24 8L22.5 10.5M5 13L8 14M27 13L24 14" stroke="#c9a96e" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Laminacja <em>rzęs</em></div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Lifting / Laminacja rzęs + farbowanie</td><td>160 zł<span class="duration">1h 25 min</span></td></tr>
+        <tr><td>Lifting / Laminacja rzęs + farbowanie + botox</td><td>170 zł<span class="duration">1h 30 min</span></td></tr>
+      </table>
+    </div>
+
+    <!-- PRZEDŁUŻANIE RZĘS -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 18C4 18 8 11 16 11C24 11 28 18 28 18" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M7 9L8.5 12M12 7L13 10.5M16 6V10M20 7L19 10.5M25 9L23.5 12" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M4 22C4 22 8 19 16 19C24 19 28 22 28 22" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Przedłużanie <em>rzęs</em></div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Przedłużanie rzęs 1:1 / 1:1.5</td><td>150 zł<span class="duration">2h 10 min</span></td></tr>
+        <tr><td>Przedłużanie rzęs 2D</td><td>160 zł<span class="duration">2h 30 min</span></td></tr>
+        <tr><td>Przedłużanie rzęs 3D</td><td>180 zł<span class="duration">3h 15 min</span></td></tr>
+        <tr><td>Przedłużanie rzęs 4–5D</td><td>200 zł<span class="duration">3h 30 min</span></td></tr>
+        <tr><td>Efekt KIM / Wet Look (mokry efekt)</td><td>190 zł<span class="duration">3h 30 min</span></td></tr>
+        <tr><td>Uzupełnienie rzęs 1:1 / 1.5:1 (do 2–2,5 tyg.)</td><td>130 zł<span class="duration">2h</span></td></tr>
+        <tr><td>Uzupełnienie rzęs 2D (do 3 tyg.)</td><td>140 zł<span class="duration">2h 30 min</span></td></tr>
+        <tr><td>Uzupełnienie rzęs 3D (do 3 tyg.)</td><td>160 zł<span class="duration">2h 30 min</span></td></tr>
+        <tr><td>Uzupełnienie rzęs 4–5D (do 3 tyg.)</td><td>180 zł<span class="duration">2h</span></td></tr>
+        <tr><td>Uzupełnienie rzęs Efekt KIM / Wet Look</td><td>170 zł<span class="duration">2h</span></td></tr>
+        <tr><td>Ściągnięcie rzęs (bez założenia)</td><td>50 zł<span class="duration">30 min</span></td></tr>
+      </table>
+    </div>
+
+    <!-- BRWI -->
+    <div class="pricing-category reveal">
+      <div class="pricing-cat-header">
+        <div class="pricing-cat-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 12C4 12 8 8 16 8C24 8 28 12 28 12" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M4 20C4 20 8 16 16 16C24 16 28 20 28 20" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M7 10L6 7M13 8.5L12.5 5.5M19 8.5L19.5 5.5M25 10L26 7" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="pricing-cat-name">Stylizacja <em>brwi</em></div>
+      </div>
+      <table class="pricing-table">
+        <tr><td>Regulacja brwi (woskiem + pęseta)</td><td>50 zł<span class="duration">30 min</span></td></tr>
+        <tr><td>Farbowanie brwi bez regulacji</td><td>50 zł<span class="duration">30 min</span></td></tr>
+        <tr><td>Farbowanie brwi z regulacją</td><td>90 zł<span class="duration">45 min</span></td></tr>
+        <tr><td>Henna pudrowa</td><td>100 zł<span class="duration">1h</span></td></tr>
+        <tr><td>Henna rzęs</td><td>50 zł<span class="duration">30 min</span></td></tr>
+        <tr><td>Laminacja brwi</td><td>120 zł<span class="duration">30 min</span></td></tr>
+        <tr><td>Laminacja brwi + regulacja lub farbowanie</td><td>140 zł<span class="duration">45 min</span></td></tr>
+        <tr><td>Laminacja brwi + regulacja + henna</td><td>160 zł<span class="duration">1h 15 min</span></td></tr>
+        <tr><td>Laminacja brwi + regulacja + henna + botox</td><td>180 zł<span class="duration">1h 30 min</span></td></tr>
+      </table>
+    </div>
+
+    <div class="pricing-book-cta reveal">
+      <p>Gotowa na swoją wymarzoną stylizację? Zarezerwuj wizytę online — bez dzwonienia, 24/7.</p>
+      <a class="btn-book" href="https://booksy.com/pl-pl/184326_black-diamond-studio_salon-kosmetyczny_21029_gdynia" target="_blank">Zarezerwuj na Booksy</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT wrapper -->
+<div id="main-content">
+
+<!-- ABOUT -->
+<div id="about">
+  <div class="reveal">
+    <p class="section-label">O nas</p>
+    <h2 class="section-title">Sztuka piękna<br>w <em>każdym detalu</em></h2>
+    <div class="gold-line"></div>
+    <p class="about-text">Black Diamond Studio to premium salon kosmetyczny w sercu Gdyni, gdzie precyzja spotyka się z pasją. Specjalizujemy się w stylizacji paznokci, rzęs oraz brwi — tworząc efekty, które zachwycają i trwają.</p>
+    <p class="about-text" style="margin-top:1rem">Nasz zespół to doświadczone artystki, dla których każda wizyta jest wyjątkową okazją do stworzenia czegoś pięknego. Dbamy o najwyższy standard higieny i używamy tylko sprawdzonych, profesjonalnych produktów.</p>
+    <div class="about-stats">
+      <div class="stat">
+        <div class="stat-number">4.9★</div>
+        <div class="stat-label">Średnia ocen</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">575+</div>
+        <div class="stat-label">Opinii na Booksy</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">15.1K</div>
+        <div class="stat-label">Obserwujących TikTok</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">1.7M</div>
+        <div class="stat-label">Polubień TikTok</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-image-wrap reveal">
+    <!-- Placeholder — wstaw własne zdjęcie salonu -->
+    <div class="about-img-placeholder">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 4L28 16H40L30 24L34 36L24 28L14 36L18 24L8 16H20L24 4Z" stroke="#c9a96e" stroke-width="1.5" fill="none"/>
+      </svg>
+      <span>Zdjęcie salonu</span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <div>
+      <p class="section-label">Usługi</p>
+      <h2 class="section-title">Co <em>oferujemy</em></h2>
+    </div>
+    <a href="#" onclick="showPricing(event)" style="color:var(--gold);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:.3rem">Pełny cennik →</a>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Elegant hand with polish brush -->
+          <path d="M18 42C18 42 12 36 12 26C12 18 17 12 26 12C35 12 40 18 40 26C40 36 34 42 34 42" stroke="#c9a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M20 42H32" stroke="#c9a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M26 12V8" stroke="#c9a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="26" cy="6.5" r="1.8" fill="#c9a96e"/>
+          <path d="M17 17L14.5 14.5M35 17L37.5 14.5" stroke="#c9a96e" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M21 29C21 29 22.5 33 26 33C29.5 33 31 29 31 29" stroke="#c9a96e" stroke-width="1.3" stroke-linecap="round"/>
+          <circle cx="26" cy="25" r="3" stroke="#c9a96e" stroke-width="1"/>
+          <circle cx="26" cy="25" r="1" fill="#c9a96e" opacity=".6"/>
+        </svg>
+      </span>
+      <div class="service-name">Manicure hybrydowy</div>
+      <p class="service-desc">Klasyczny manicure hybrydowy z precyzyjnym opracowaniem skórki. Dostępny w setkach kolorów i wzorów.</p>
+      <div class="service-price">od 140 zł · 1h 40min</div>
+    </div>
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Diamond / gem shape -->
+          <polygon points="26,8 40,20 26,44 12,20" stroke="#c9a96e" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+          <polygon points="26,8 40,20 26,20 12,20" stroke="#c9a96e" stroke-width="1" stroke-linejoin="round" fill="rgba(201,169,110,0.08)"/>
+          <line x1="12" y1="20" x2="26" y2="20" stroke="#c9a96e" stroke-width="1"/>
+          <line x1="26" y1="20" x2="40" y2="20" stroke="#c9a96e" stroke-width="1"/>
+          <line x1="18" y1="20" x2="26" y2="8" stroke="#c9a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="34" y1="20" x2="26" y2="8" stroke="#c9a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="18" y1="20" x2="26" y2="44" stroke="#c9a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="34" y1="20" x2="26" y2="44" stroke="#c9a96e" stroke-width=".8" opacity=".5"/>
+          <!-- sparkles -->
+          <path d="M44 10L45 8L46 10L44 10Z" fill="#c9a96e" opacity=".7"/>
+          <path d="M8 38L9 36L10 38L8 38Z" fill="#c9a96e" opacity=".5"/>
+          <circle cx="43" cy="36" r="1.2" fill="#c9a96e" opacity=".4"/>
+        </svg>
+      </span>
+      <div class="service-name">Przedłużanie żelem</div>
+      <p class="service-desc">Eleganckie przedłużanie paznokci żelem w dowolnym kształcie i długości — od naturalnych po efektowne.</p>
+      <div class="service-price">od 160 zł · 1h 50min</div>
+    </div>
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Lotus / flower for pedicure -->
+          <path d="M26 36C26 36 16 30 16 22C16 16 20 12 26 12C32 12 36 16 36 22C36 30 26 36 26 36Z" stroke="#c9a96e" stroke-width="1.4" fill="rgba(201,169,110,0.05)"/>
+          <path d="M26 36C26 36 20 28 22 20" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+          <path d="M26 36C26 36 32 28 30 20" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+          <path d="M14 28C14 28 10 20 16 16" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          <path d="M38 28C38 28 42 20 36 16" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          <path d="M26 36V42" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 42H32" stroke="#c9a96e" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="26" cy="22" r="3" stroke="#c9a96e" stroke-width="1" fill="rgba(201,169,110,0.15)"/>
+        </svg>
+      </span>
+      <div class="service-name">Pedicure hybrydowy</div>
+      <p class="service-desc">Kompleksowy pedicure z trwałą stylizacją hybrydową. Idealne wykończenie dla wymagających klientek.</p>
+      <div class="service-price">180 zł · 1h 30min</div>
+    </div>
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Eye with lashes -->
+          <path d="M6 26C6 26 12 16 26 16C40 16 46 26 46 26C46 26 40 36 26 36C12 36 6 26 6 26Z" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round" fill="rgba(201,169,110,0.05)"/>
+          <circle cx="26" cy="26" r="6" stroke="#c9a96e" stroke-width="1.3"/>
+          <circle cx="26" cy="26" r="2.5" fill="#c9a96e" opacity=".8"/>
+          <circle cx="27.5" cy="24.5" r="1" fill="#f5f0eb" opacity=".6"/>
+          <!-- upper lashes -->
+          <path d="M14 20L13 16M19 17L18.5 13M26 16V12M33 17L33.5 13M38 20L39 16" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div class="service-name">Stylizacja rzęs</div>
+      <p class="service-desc">Objętość, długość i kunszt — perfekcyjne rzęsy, które podkreślają naturalną urodę spojrzenia.</p>
+      <div class="service-price">Zapytaj o cennik</div>
+    </div>
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Arched brow lines -->
+          <path d="M8 20C8 20 14 12 26 12C38 12 44 20 44 20" stroke="#c9a96e" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M8 32C8 32 14 24 26 24C38 24 44 32 44 32" stroke="#c9a96e" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- small hairs -->
+          <path d="M12 18L11 14M18 13.5L17.5 9.5M26 12V8M34 13.5L34.5 9.5M40 18L41 14" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".55"/>
+          <path d="M12 30L11 26M18 25.5L17.5 21.5M26 24V20M34 25.5L34.5 21.5M40 30L41 26" stroke="#c9a96e" stroke-width="1" stroke-linecap="round" opacity=".55"/>
+        </svg>
+      </span>
+      <div class="service-name">Stylizacja brwi</div>
+      <p class="service-desc">Regulacja, henna, laminacja — kompleksowa pielęgnacja brwi dla wyrazistego i zadbowanego wyglądu.</p>
+      <div class="service-price">Zapytaj o cennik</div>
+    </div>
+    <div class="service-card">
+      <span class="svc-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Nail polish bottle -->
+          <rect x="20" y="22" width="12" height="22" rx="3" stroke="#c9a96e" stroke-width="1.4" fill="rgba(201,169,110,0.08)"/>
+          <rect x="22" y="16" width="8" height="8" rx="1.5" stroke="#c9a96e" stroke-width="1.2"/>
+          <rect x="23.5" y="12" width="5" height="5" rx="1" stroke="#c9a96e" stroke-width="1.2"/>
+          <!-- shine lines on bottle -->
+          <path d="M23 26L23 38" stroke="#c9a96e" stroke-width=".8" stroke-linecap="round" opacity=".35"/>
+          <path d="M25 26L25 36" stroke="#c9a96e" stroke-width=".8" stroke-linecap="round" opacity=".2"/>
+          <!-- brush drip -->
+          <path d="M36 28C36 28 40 32 40 36C40 38.5 38.5 40 37 40C35.5 40 34 38.5 34 36C34 32 36 28 36 28Z" stroke="#c9a96e" stroke-width="1.2" fill="rgba(201,169,110,0.12)" stroke-linecap="round"/>
+          <path d="M36 28L36 20" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M36 20L33 14" stroke="#c9a96e" stroke-width="1.1" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div class="service-name">Manicure klasyczny</div>
+      <p class="service-desc">Precyzyjne opracowanie dłoni i paznokci dla naturalnego, zadbowanego efektu. Idealna pielęgnacja codzienności.</p>
+      <div class="service-price">80 zł · 40min</div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-inner">
+    <div class="portfolio-header reveal">
+      <p class="section-label">Portfolio</p>
+      <h2 class="section-title">Nasze <em>realizacje</em></h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <!-- REAL photos from Booksy service photos -->
+      <div class="gallery-item tall">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/b6d710f66a41481a8e17bed5f9e5c136.jpeg" alt="Uzupełnienie żelem" loading="lazy" />
+        <div class="gallery-overlay"><span>Uzupełnienie żelem</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/a2b12b8777d143508b94b8cdc91cda4e.jpeg" alt="Stylizacja paznokci" loading="lazy" />
+        <div class="gallery-overlay"><span>Stylizacja paznokci</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/8e12d3d5d81842c8a46d4bcb9657711e.jpeg" alt="Manicure hybrydowy" loading="lazy" />
+        <div class="gallery-overlay"><span>Manicure hybrydowy</span></div>
+      </div>
+      <div class="gallery-item tall">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/f6ba87a52c124c8fb8e685adf2e5d937.jpeg" alt="Paznokcie krótkie" loading="lazy" />
+        <div class="gallery-overlay"><span>Manicure 1 kolor</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/1387d42f588d45daa53669f800dea9da.jpeg" alt="Pedicure hybrydowy" loading="lazy" />
+        <div class="gallery-overlay"><span>Pedicure hybrydowy</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/3ab5ed32a8804be88709ba84dc51425c.jpeg" alt="Pedicure" loading="lazy" />
+        <div class="gallery-overlay"><span>Pedicure stylizacja</span></div>
+      </div>
+      <div class="gallery-item wide">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/76950701d91942e98aca37ae54d6c2e8.jpeg" alt="Pedicure efekt" loading="lazy" />
+        <div class="gallery-overlay"><span>Pedicure efekt końcowy</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/44bdd2cc90fd4fbaa837b83a113523e3.jpeg" alt="Żel długie" loading="lazy" />
+        <div class="gallery-overlay"><span>Żel długie paznokcie</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/24064e08e5274a6abe7713618a9961d1.jpeg" alt="Żel rozmiar 4" loading="lazy" />
+        <div class="gallery-overlay"><span>Uzupełnienie żelem</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/baa8cbac3c274d659062832c8de2799f.jpeg" alt="Żel rozmiar 6" loading="lazy" />
+        <div class="gallery-overlay"><span>Żel rozmiar 6</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/2d8b7e245fa642d1aa1bfd6383cb09d9.jpeg" alt="Stylizacja" loading="lazy" />
+        <div class="gallery-overlay"><span>Stylizacja paznokci</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/58d202ae811c4e5a9a32c245cddab484.jpeg" alt="Paznokcie efekt" loading="lazy" />
+        <div class="gallery-overlay"><span>Efekt końcowy</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/6a7f2a6392ce41ba9d11bf6312680c56.jpeg" alt="Klasyczny manicure" loading="lazy" />
+        <div class="gallery-overlay"><span>Manicure klasyczny</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/service_photos/8d8b4ede54d945ec8d4f989e4a53bada.jpeg" alt="Przedłużanie" loading="lazy" />
+        <div class="gallery-overlay"><span>Przedłużanie S</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://d375139ucebi94.cloudfront.net/region2/pl/184326/biz_photo/a4075934462543bcaae30f7f6c5b03-black-diamond-studio-biz-photo-1f726802cb0e47e2b10d625af383b5-booksy.jpeg" alt="Black Diamond Studio" loading="lazy" />
+        <div class="gallery-overlay"><span>Black Diamond Studio</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reveal">
+    <p class="section-label">Opinie klientek</p>
+    <h2 class="section-title">Co mówią o <em>nas</em></h2>
+  </div>
+  <div class="reviews-grid reveal">
+    <div class="review-card">
+      <div class="review-rating-badge">4.9 ★</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">„Absolutnie rewelacyjne miejsce! Paznokcie trzymają się idealnie, a obsługa jest na najwyższym poziomie. Wracam tu od ponad roku i nigdy się nie zawiodłam."</p>
+      <div class="review-author">
+        <div class="review-avatar">K</div>
+        <div class="review-name">Kasia M.</div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-rating-badge">4.9 ★</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">„Najlepszy salon w Gdyni! Precyzja wykonania jest niesamowita. Rzęsy wyglądają naturalnie i pięknie. Polecam wszystkim bez wyjątku!"</p>
+      <div class="review-author">
+        <div class="review-avatar">M</div>
+        <div class="review-name">Magda W.</div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-rating-badge">4.9 ★</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">„Profesjonalizm na każdym kroku. Panie są bardzo miłe, salon czysty i estetyczny. Moje paznokcie zawsze wyglądają jak z okładki magazynu!"</p>
+      <div class="review-author">
+        <div class="review-avatar">A</div>
+        <div class="review-name">Ania S.</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;opacity:.6;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">
+    Ponad 575 opinii na Booksy — średnia 4.9/5
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking">
+  <div class="booking-inner reveal">
+    <p class="section-label">Rezerwacja</p>
+    <h2 class="section-title">Zarezerwuj<br><em>swoją wizytę</em></h2>
+    <div class="gold-line" style="margin:1.8rem auto"></div>
+    <p class="booking-text">Dołącz do grona naszych zadowolonych klientek. Umawiaj wizyty online 24/7 przez platformę Booksy — szybko, łatwo i bez telefonowania.</p>
+    <p class="booking-address">📍 ul. Pułkownika Stanisława Dąbka 259, 81-155 Gdynia</p>
+    <a class="btn-book" href="https://booksy.com/pl-pl/184326_black-diamond-studio_salon-kosmetyczny_21029_gdynia" target="_blank">Zarezerwuj na Booksy</a>
+    <div class="social-links">
+      <a href="https://www.tiktok.com/@blackdiamond.studio" target="_blank">TikTok</a>
+      <a href="https://www.instagram.com/blackdia..." target="_blank">Instagram</a>
+      <a href="https://booksy.com/pl-pl/184326_black-diamond-studio_salon-kosmetyczny_21029_gdynia" target="_blank">Booksy</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+</div><!-- end #main-content -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2025 Black Diamond Studio · Gdynia</div>
+  <div class="footer-logo">Black Diamond</div>
+  <div class="footer-copy">blackdiamond.studio</div>
+</footer>
+
+<script>
+  // Pricing page toggle
+  function showPricing(e) {
+    if (e) e.preventDefault();
+    document.getElementById('main-content').classList.add('hidden');
+    const pricing = document.getElementById('pricing');
+    pricing.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      document.querySelectorAll('#pricing .reveal').forEach(el => {
+        observer.observe(el);
+      });
+    }, 100);
+  }
+  function hidePricing() {
+    document.getElementById('pricing').classList.remove('active');
+    document.getElementById('main-content').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .service-card, .gallery-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Generate twinkling diamonds
+  const container = document.getElementById('diamonds');
+  for (let i = 0; i < 60; i++) {
+    const d = document.createElement('div');
+    d.className = 'diamond';
+    d.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --dur:${3+Math.random()*5}s;
+      --delay:${Math.random()*6}s;
+      --op:${.3+Math.random()*.5};
+      --sc:${1.5+Math.random()*2};
+      width:${1+Math.random()*2}px;
+      height:${1+Math.random()*2}px;
+    `;
+    container.appendChild(d);
+  }
+
+  // Intersection observer for reveals
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: .12 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
